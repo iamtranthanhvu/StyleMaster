@@ -131,8 +131,8 @@ class TextVideoStyleDataset(torch.utils.data.Dataset):
                 control_frame = self.control_process(frame)
                 control_frame = rearrange(control_frame, "C H W -> C 1 H W")
                 # 扩展到81帧
-                control_frames = control_frame.repeat(1, 81, 1, 1)
-                data["control"] = control_frames
+                # control_frames = control_frame.repeat(1, 81, 1, 1)
+                data["control"] = control_frame
             else:
                 # 如果是视频
                 control_video = self.load_control_video(control)
@@ -336,6 +336,7 @@ if __name__ == '__main__':
                 controlnet_guidance_end=args.controlnet_guidance_end,      # 新增
                 cfg_scale=args.cfg_scale,
                 style_cfg_scale=args.style_cfg_scale,
+                num_frames=1,
                 num_inference_steps=50,
                 seed=0, 
                 tiled=True
@@ -348,10 +349,13 @@ if __name__ == '__main__':
                 target_style=image_embeds,
                 cfg_scale=args.cfg_scale,
                 style_cfg_scale=args.style_cfg_scale,
+                num_frames=1,
                 num_inference_steps=50,
                 seed=0, 
                 tiled=True
             )
             
-        save_video(video, os.path.join(output_dir, f"video{batch_idx}.mp4"), fps=30, quality=5)
-        print(f"Saved video {batch_idx}")
+        # save_video(video, os.path.join(output_dir, f"video{batch_idx}.mp4"), fps=30, quality=5)
+        # print(f"Saved video {batch_idx}")
+        video[0].save(os.path.join(output_dir, f"image{batch_idx}.png"))
+        print(f"Saved image {batch_idx}")
